@@ -414,7 +414,7 @@
   // ═══════════════════════════════════════════
   // !! IMPORTANT: PASTE YOUR GOOGLE SCRIPT URL HERE
   // Follow the SETUP.txt instructions to get this URL
-  const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec';
   // ═══════════════════════════════════════════
 
   let currentLang = 'ar';
@@ -535,7 +535,7 @@
     btn.innerHTML=`<span class="t" data-ar="جاري الإرسال..." data-en="Sending...">${currentLang==='ar'?'جاري الإرسال...':'Sending...'}</span><span class="spinner"></span>`;
 
     try {
-      if(GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') throw new Error('not configured');
+      if(GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec') throw new Error('not configured');
       await fetch(GOOGLE_SCRIPT_URL, {method:'POST', body:JSON.stringify(orderData)});
     } catch(e) {
       console.warn('Google Sheets not configured yet, showing success anyway');
