@@ -1,0 +1,104 @@
+╔══════════════════════════════════════════════════════════════╗
+║           BODYBOOST DZ — SETUP INSTRUCTIONS                  ║
+║           تعليمات الإعداد                                    ║
+╚══════════════════════════════════════════════════════════════╝
+
+FILES IN THIS PACKAGE:
+  📄 index.html         → Client shop (for customers)
+  📄 admin.html         → Seller dashboard (for you only)
+  📄 google-script.js   → Paste into Google Apps Script
+  📄 SETUP.txt          → This file
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — CREATE GOOGLE SHEET (2 minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Go to: https://sheets.google.com
+2. Create a new spreadsheet
+3. Name it: "BodyBoost DZ Orders"
+4. Leave it open
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — SETUP GOOGLE APPS SCRIPT (3 minutes)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. In your Google Sheet, click: Extensions → Apps Script
+2. DELETE all existing code in the editor
+3. Open the file "google-script.js" from this package
+4. COPY ALL the code and PASTE it into Apps Script
+5. Click the 💾 Save button (Ctrl+S)
+6. Click "Deploy" → "New deployment"
+7. Click the gear ⚙️ next to "Type" → Select "Web App"
+8. Fill in:
+   - Description: BodyBoost DZ API
+   - Execute as: Me
+   - Who has access: Anyone  ← IMPORTANT!
+9. Click "Deploy"
+10. Click "Authorize access" → Choose your Google account → Allow
+11. COPY the Web App URL (looks like: https://script.google.com/macros/s/ABC.../exec)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — PASTE URL INTO BOTH HTML FILES (1 minute)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In BOTH index.html AND admin.html, find this line:
+
+  const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+
+Replace 'YOUR_GOOGLE_SCRIPT_URL_HERE' with your URL, like:
+
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/ABC123.../exec';
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4 — CHANGE ADMIN PASSWORD (optional but recommended)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In admin.html, find:
+  const ADMIN_PASSWORD = 'bodyboost2025';
+
+Change 'bodyboost2025' to your own password.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5 — HOST YOUR WEBSITE (free options)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Option A — Netlify (easiest, FREE):
+  1. Go to: https://netlify.com
+  2. Sign up for free
+  3. Drag & drop your folder onto the Netlify dashboard
+  4. Done! You get a free URL like: https://bodyboost-dz.netlify.app
+
+Option B — GitHub Pages (FREE):
+  1. Go to: https://github.com
+  2. Create account → New repository
+  3. Upload your files
+  4. Settings → Pages → Deploy from main branch
+  5. Free URL: https://yourusername.github.io/bodyboost
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOW IT WORKS (summary)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CLIENT (index.html):
+  → Browses products
+  → Adds to cart
+  → Fills order form (name, phone, wilaya, address)
+  → Clicks "Send Order"
+  → Order saved to Google Sheets ✅
+  → You receive email notification ✅
+  → Client sees success screen with order ID ✅
+
+SELLER (admin.html):
+  → Login with password
+  → See all orders in table
+  → See stats: total, new, confirmed, delivered
+  → See charts: status distribution, top wilayas
+  → Click orders to view details
+  → Update status: New → Confirmed → Delivered
+  → Status syncs back to Google Sheets ✅
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SHARE:
+  Give customers:  index.html (or your public URL)
+  Keep private:    admin.html (only you know this page)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
