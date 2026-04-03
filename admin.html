@@ -247,7 +247,7 @@
   // ═══════════════════════════════════════════
   // CONFIGURATION — change these values
   const ADMIN_PASSWORD = 'bodyboost2025'; // ← Change this password!
-  const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // ← From SETUP.txt
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec'; // ← From SETUP.txt
   // ═══════════════════════════════════════════
 
   let allOrders = [];
@@ -261,7 +261,7 @@
     if(pwd === ADMIN_PASSWORD) {
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('dashboard').classList.add('active');
-      if(GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL_HERE') document.getElementById('setupBanner').style.display='flex';
+      if(GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec') document.getElementById('setupBanner').style.display='flex';
       loadOrders();
     } else {
       document.getElementById('loginError').textContent='⚠️ كلمة المرور خاطئة';
@@ -275,7 +275,7 @@
     document.getElementById('ordersTableContainer').innerHTML='<div class="loading"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div>';
 
     // Try Google Sheets first, fallback to localStorage
-    if(GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+    if(GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec') {
       try {
         const res = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
         const data = await res.json();
@@ -419,7 +419,7 @@
   async function updateStatus(idx, newStatus) {
     allOrders[idx].status = newStatus;
     localStorage.setItem('bb_orders', JSON.stringify(allOrders));
-    if(GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_URL_HERE'){
+    if(GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec'){
       try {
         await fetch(GOOGLE_SCRIPT_URL, {method:'POST', body:JSON.stringify({action:'updateStatus', orderId:allOrders[idx].orderId, status:newStatus})});
       } catch(e){ console.warn('Could not sync to Google Sheets'); }
