@@ -33,8 +33,7 @@ function doPost(e) {
           break;
         }
       }
-      return ContentService.createTextOutput(JSON.stringify({success: true}))
-        .setMimeType(ContentService.MimeType.JSON);
+      return makeResponse({success: true});
     }
 
     // Add new order row
@@ -86,12 +85,10 @@ function doPost(e) {
       Logger.log('Email error: ' + mailError);
     }
 
-    return ContentService.createTextOutput(JSON.stringify({success: true, orderId: data.orderId}))
-      .setMimeType(ContentService.MimeType.JSON);
+    return makeResponse({success: true, orderId: data.orderId});
 
   } catch(error) {
-    return ContentService.createTextOutput(JSON.stringify({success: false, error: error.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
+    return makeResponse({success: false, error: error.toString()});
   }
 }
 
@@ -99,20 +96,24 @@ function doGet(e) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(SHEET_NAME);
-    if (!sheet) return ContentService.createTextOutput(JSON.stringify({orders:[]})).setMimeType(ContentService.MimeType.JSON);
+    if (!sheet) return makeResponse({orders:[]});
 
     const rows = sheet.getDataRange().getValues();
-    const headers = rows[0];
     const orders = rows.slice(1).map(row => ({
       orderId: row[0], name: row[1], phone: row[2],
       wilaya: row[3], address: row[4], products: row[5],
       total: row[6], date: row[7], status: row[8], notes: row[9]
     })).reverse(); // newest first
 
-    return ContentService.createTextOutput(JSON.stringify({orders}))
-      .setMimeType(ContentService.MimeType.JSON);
+    return makeResponse({orders});
   } catch(error) {
-    return ContentService.createTextOutput(JSON.stringify({orders:[], error: error.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
+    return makeResponse({orders:[], error: error.toString()});
   }
+}
+
+// ── Helper: always return JSON with CORS headers ──
+function makeResponse(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
 }
