@@ -9,6 +9,8 @@
   :root{--red:#e62020;--gold:#f5a623;--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--text:#f0f0f0;--muted:#888;--border:#222;--green:#4caf50;--orange:#ff9800;--blue:#2196f3;--radius:12px;}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;direction:rtl;min-height:100vh;}
+
+  /* LOGIN */
   .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at center,#1a0808 0%,#0a0a0a 70%);}
   .login-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:380px;text-align:center;}
   .login-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);margin-bottom:4px;}
@@ -19,8 +21,12 @@
   .login-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--radius);padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;}
   .login-btn:hover{background:#c41a1a;}
   .login-error{color:var(--red);font-size:13px;margin-top:10px;}
+
+  /* DASHBOARD */
   .dashboard{display:none;}
   .dashboard.active{display:block;}
+
+  /* TOPBAR */
   .topbar{background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
   .topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
   .topbar-logo span{color:var(--red);}
@@ -30,7 +36,11 @@
   .refresh-btn:hover{border-color:var(--gold);color:var(--gold);}
   .logout-btn{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);padding:8px 16px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:all .2s;}
   .logout-btn:hover{border-color:var(--red);color:var(--red);}
+
+  /* MAIN */
   .main{max-width:1400px;margin:0 auto;padding:32px 24px;}
+
+  /* STAT CARDS */
   .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px;}
   .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
   .stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 var(--radius) var(--radius) 0;}
@@ -45,6 +55,8 @@
   .stat-card.green .stat-value{color:var(--green);}
   .stat-card.blue .stat-value{color:var(--blue);}
   .stat-label2{font-size:13px;color:var(--muted);margin-top:4px;}
+
+  /* CHART */
   .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
   @media(max-width:768px){.charts-row{grid-template-columns:1fr;}}
   .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
@@ -55,11 +67,19 @@
   .bar-track{flex:1;background:var(--surface2);border-radius:4px;height:20px;overflow:hidden;}
   .bar-fill{height:100%;border-radius:4px;transition:width .6s ease;background:var(--red);}
   .bar-value{font-size:12px;font-weight:700;color:var(--text);width:60px;}
+  .donut-chart{display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap;}
+  .donut-legend{display:flex;flex-direction:column;gap:8px;}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:13px;}
+  .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+  /* FILTERS */
   .filters-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
   .filter-btn{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s;}
   .filter-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
   .search-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 14px;font-size:13px;font-family:inherit;min-width:200px;}
   .search-input:focus{outline:none;border-color:var(--gold);}
+
+  /* ORDERS TABLE */
   .orders-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
   .orders-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
   .orders-title{font-size:18px;font-weight:700;}
@@ -88,6 +108,8 @@
   .btn-view:hover{background:var(--blue);color:#fff;}
   .empty-state{text-align:center;padding:60px;color:var(--muted);}
   .empty-icon{font-size:48px;margin-bottom:12px;}
+
+  /* ORDER DETAIL MODAL */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;padding:20px;}
   .modal-overlay.open{opacity:1;pointer-events:all;}
   .modal{background:var(--surface);border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;border:1px solid var(--border);}
@@ -106,25 +128,42 @@
   .status-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;font-family:inherit;margin-top:16px;}
   .save-status-btn{width:100%;margin-top:10px;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
   .save-status-btn:hover{background:#c41a1a;}
+
+  /* LOADING */
   .loading{text-align:center;padding:40px;color:var(--muted);}
   .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  @media(max-width:600px){ .stat-cards{grid-template-columns:1fr 1fr;} .topbar-title{display:none;} th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){display:none;} }
+
+  /* SETUP BANNER */
+  .setup-banner{background:linear-gradient(135deg,#f5a62320,#e6202020);border:1px solid var(--gold);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px;}
+  .setup-banner-icon{font-size:24px;flex-shrink:0;}
+  .setup-banner p{font-size:13px;line-height:1.6;}
+  .setup-banner strong{color:var(--gold);}
+  .setup-banner a{color:var(--gold);font-weight:700;}
+
+  @media(max-width:600px){
+    .stat-cards{grid-template-columns:1fr 1fr;}
+    .topbar-title{display:none;}
+    th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){display:none;}
+  }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <div class="login-logo">BODY<span>BOOST</span>.DZ</div>
     <div class="login-sub">لوحة تحكم البائع | Seller Dashboard</div>
-    <input type="password" id="passwordInput" placeholder="كلمة المرور / Password">
+    <input type="password" id="passwordInput" placeholder="كلمة المرور / Password" onkeydown="if(event.key==='Enter')login()">
     <button class="login-btn" onclick="login()">دخول / Login</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
+<!-- DASHBOARD -->
 <div class="dashboard" id="dashboard">
+  <!-- TOPBAR -->
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:16px;">
       <div class="topbar-logo">BODY<span>BOOST</span>.DZ</div>
@@ -137,6 +176,16 @@
   </div>
 
   <div class="main">
+
+    <!-- SETUP BANNER (shown if not configured) -->
+    <div class="setup-banner" id="setupBanner" style="display:none">
+      <div class="setup-banner-icon">⚠️</div>
+      <div>
+        <p><strong>لم يتم ربط Google Sheets بعد!</strong> اتبع تعليمات ملف <strong>SETUP.txt</strong> لربط الموقع بقاعدة البيانات. حتى ذلك الحين، البيانات تُحفظ محلياً في المتصفح فقط.</p>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
     <div class="stat-cards">
       <div class="stat-card red"><div class="stat-icon">📦</div><div class="stat-value" id="statTotal">0</div><div class="stat-label2">إجمالي الطلبات</div></div>
       <div class="stat-card gold"><div class="stat-icon">🔴</div><div class="stat-value" id="statNew">0</div><div class="stat-label2">طلبات جديدة</div></div>
@@ -145,6 +194,7 @@
       <div class="stat-card gold"><div class="stat-icon">💰</div><div class="stat-value" id="statRevenue">0</div><div class="stat-label2">إجمالي المبيعات (DA)</div></div>
     </div>
 
+    <!-- CHARTS -->
     <div class="charts-row">
       <div class="chart-card">
         <div class="chart-title">📊 حالة الطلبات</div>
@@ -156,6 +206,7 @@
       </div>
     </div>
 
+    <!-- FILTERS -->
     <div class="filters-bar">
       <button class="filter-btn active" onclick="filterOrders('all',this)">الكل</button>
       <button class="filter-btn" onclick="filterOrders('جديد / New',this)">🔴 جديد</button>
@@ -165,6 +216,7 @@
       <input type="text" class="search-input" id="searchInput" placeholder="🔍 بحث باسم أو رقم الطلب..." oninput="searchOrders(this.value)">
     </div>
 
+    <!-- ORDERS TABLE -->
     <div class="orders-card">
       <div class="orders-header">
         <div class="orders-title">📋 قائمة الطلبات</div>
@@ -176,9 +228,11 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
+<!-- ORDER DETAIL MODAL -->
 <div class="modal-overlay" id="orderDetailModal">
   <div class="modal">
     <div class="modal-hdr">
@@ -190,43 +244,65 @@
 </div>
 
 <script>
-  const ADMIN_PASSWORD = 'bodyboost2025'; 
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec'; 
+  // ═══════════════════════════════════════════
+  // CONFIGURATION — change these values
+  const ADMIN_PASSWORD = '2005'; // ← Change this password!
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSDp0RR4HCb1gtDYgMlH5aJcBDq9NEOsF6OdtP4LjEPZHuV1wWBt6LaGf_7zMaVOZv/exec'; // ← From SETUP.txt
+  // ═══════════════════════════════════════════
 
   let allOrders = [];
   let filteredOrders = [];
   let currentFilter = 'all';
   let currentOrderIndex = null;
 
+  // ── AUTH ──
   function login() {
     const pwd = document.getElementById('passwordInput').value;
     if(pwd === ADMIN_PASSWORD) {
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('dashboard').classList.add('active');
+      if(GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec') document.getElementById('setupBanner').style.display='flex';
       loadOrders();
     } else {
       document.getElementById('loginError').textContent='⚠️ كلمة المرور خاطئة';
     }
   }
-
   function logout() { document.getElementById('loginScreen').style.display='flex'; document.getElementById('dashboard').classList.remove('active'); document.getElementById('passwordInput').value=''; }
   document.getElementById('passwordInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
 
+  // ── LOAD ORDERS ──
   async function loadOrders() {
     document.getElementById('ordersTableContainer').innerHTML='<div class="loading"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div>';
-    try {
-      const res = await fetch(GOOGLE_SCRIPT_URL);
-      const data = await res.json();
-      allOrders = data.orders || [];
-      localStorage.setItem('bb_orders', JSON.stringify(allOrders));
-    } catch(e) {
-      console.error('Fetch error:', e);
+
+    // Try Google Sheets first, fallback to localStorage
+    if(GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec') {
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
+        const data = await res.json();
+        allOrders = data.orders || [];
+        // Save locally as backup
+        localStorage.setItem('bb_orders', JSON.stringify(allOrders));
+      } catch(e) {
+        console.warn('Could not fetch from Google Sheets, using local data');
+        allOrders = JSON.parse(localStorage.getItem('bb_orders')||'[]');
+      }
+    } else {
       allOrders = JSON.parse(localStorage.getItem('bb_orders')||'[]');
+      // Add demo orders if empty
+      if(allOrders.length === 0) addDemoOrders();
     }
+
     updateStats();
     applyFilter(currentFilter);
   }
 
+  function addDemoOrders() {
+    allOrders = [
+    ];
+    localStorage.setItem('bb_orders', JSON.stringify(allOrders));
+  }
+
+  // ── STATS ──
   function updateStats() {
     const total = allOrders.length;
     const newOrders = allOrders.filter(o=>o.status.includes('New')||o.status.includes('جديد')).length;
@@ -234,16 +310,18 @@
     const delivered = allOrders.filter(o=>o.status.includes('Delivered')||o.status.includes('توصيل')).length;
     const revenue = allOrders
       .filter(o=>!o.status.includes('Cancelled')&&!o.status.includes('ملغي'))
-      .reduce((sum,o)=>sum+parseInt(String(o.total).replace(/[^0-9]/g,'')||0),0);
+      .reduce((sum,o)=>sum+parseInt(o.total.replace(/[^0-9]/g,'')||0),0);
 
     document.getElementById('statTotal').textContent=total;
     document.getElementById('statNew').textContent=newOrders;
     document.getElementById('statConfirmed').textContent=confirmed;
     document.getElementById('statDelivered').textContent=delivered;
     document.getElementById('statRevenue').textContent=revenue.toLocaleString();
+
     renderCharts(newOrders, confirmed, delivered, allOrders.filter(o=>o.status.includes('Cancelled')||o.status.includes('ملغي')).length);
   }
 
+  // ── CHARTS ──
   function renderCharts(newC, confirmed, delivered, cancelled) {
     const total = newC+confirmed+delivered+cancelled||1;
     const statuses = [
@@ -259,6 +337,7 @@
         <div class="bar-value">${s.value}</div>
       </div>`).join('');
 
+    // Wilaya chart
     const wilayas = {};
     allOrders.forEach(o=>{ if(o.wilaya) wilayas[o.wilaya]=(wilayas[o.wilaya]||0)+1; });
     const top5 = Object.entries(wilayas).sort((a,b)=>b[1]-a[1]).slice(0,5);
@@ -271,13 +350,13 @@
       </div>`).join('') : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">لا توجد بيانات بعد</div>';
   }
 
+  // ── FILTER ──
   function filterOrders(filter, btn) {
     currentFilter = filter;
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     if(btn) btn.classList.add('active');
     applyFilter(filter);
   }
-  
   function applyFilter(filter) {
     if(filter==='all') filteredOrders=[...allOrders];
     else filteredOrders=allOrders.filter(o=>o.status===filter||o.status.includes(filter.split(' ')[0]));
@@ -285,23 +364,22 @@
     if(search) applySearch(search);
     else renderTable(filteredOrders);
   }
-
   function searchOrders(val) {
     applyFilter(currentFilter);
     if(val) applySearch(val);
   }
-
   function applySearch(val) {
     const v=val.toLowerCase();
     const results=filteredOrders.filter(o=>
-      String(o.name).toLowerCase().includes(v)||
-      String(o.orderId).toLowerCase().includes(v)||
-      String(o.phone).includes(v)||
-      String(o.wilaya).toLowerCase().includes(v)
+      o.name?.toLowerCase().includes(v)||
+      o.orderId?.toLowerCase().includes(v)||
+      o.phone?.includes(v)||
+      o.wilaya?.toLowerCase().includes(v)
     );
     renderTable(results);
   }
 
+  // ── TABLE ──
   function renderTable(orders) {
     document.getElementById('ordersCount').textContent=orders.length+' طلب';
     if(orders.length===0){
@@ -309,9 +387,8 @@
       return;
     }
     const rows=orders.map((o,i)=>{
-      const realIdx = allOrders.findIndex(item => item.orderId === o.orderId);
-      const s = String(o.status);
-      const statusClass=s.includes('New')||s.includes('جديد')?'status-new':s.includes('Confirmed')||s.includes('مؤكد')?'status-confirmed':s.includes('Delivered')||s.includes('توصيل')?'status-delivered':'status-cancelled';
+      const realIdx=allOrders.indexOf(o);
+      const statusClass=o.status.includes('New')||o.status.includes('جديد')?'status-new':o.status.includes('Confirmed')||o.status.includes('مؤكد')?'status-confirmed':o.status.includes('Delivered')||o.status.includes('توصيل')?'status-delivered':'status-cancelled';
       return `<tr>
         <td><span class="order-id">${o.orderId||'-'}</span></td>
         <td><strong>${o.name||'-'}</strong><br><span style="color:var(--muted);font-size:11px">${o.phone||''}</span></td>
@@ -322,33 +399,40 @@
         <td>
           <div class="action-btns">
             <button class="action-btn btn-view" onclick="viewOrder(${realIdx})">👁 عرض</button>
-            ${!s.includes('Delivered')?`<button class="action-btn btn-deliver" onclick="updateStatus(${realIdx},'تم التوصيل / Delivered')">🚚</button>`:''}
-            ${s.includes('New')?`<button class="action-btn btn-confirm" onclick="updateStatus(${realIdx},'مؤكد / Confirmed')">✅</button>`:''}
+            ${!o.status.includes('Delivered')&&!o.status.includes('توصيل')?`<button class="action-btn btn-deliver" onclick="updateStatus(${realIdx},'تم التوصيل / Delivered')">🚚</button>`:''}
+            ${o.status.includes('New')||o.status.includes('جديد')?`<button class="action-btn btn-confirm" onclick="updateStatus(${realIdx},'مؤكد / Confirmed')">✅</button>`:''}
+            ${!o.status.includes('Cancelled')&&!o.status.includes('ملغي')?`<button class="action-btn btn-cancel" onclick="updateStatus(${realIdx},'ملغي / Cancelled')">✕</button>`:''}
           </div>
         </td>
       </tr>`;
     }).join('');
-    document.getElementById('ordersTableContainer').innerHTML=`<table><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الولاية</th><th>التاريخ</th><th>المبلغ</th><th>الحالة</th><th>إجراءات</th></tr></thead><tbody>${rows}</tbody></table>`;
+    document.getElementById('ordersTableContainer').innerHTML=`
+      <table>
+        <thead><tr>
+          <th>رقم الطلب</th><th>العميل</th><th>الولاية</th><th>التاريخ</th><th>المبلغ</th><th>الحالة</th><th>إجراءات</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
   }
 
+  // ── STATUS UPDATE ──
   async function updateStatus(idx, newStatus) {
-    const order = allOrders[idx];
-    order.status = newStatus;
+    allOrders[idx].status = newStatus;
+    localStorage.setItem('bb_orders', JSON.stringify(allOrders));
+    if(GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec'){
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {method:'POST', body:JSON.stringify({action:'updateStatus', orderId:allOrders[idx].orderId, status:newStatus})});
+      } catch(e){ console.warn('Could not sync to Google Sheets'); }
+    }
     updateStats();
     applyFilter(currentFilter);
-    try {
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method:'POST',
-        mode: 'no-cors',
-        body:JSON.stringify({action:'updateStatus', orderId:order.orderId, status:newStatus})
-      });
-    } catch(e){ console.warn('Sync failed'); }
   }
 
+  // ── ORDER DETAIL ──
   function viewOrder(idx) {
     currentOrderIndex = idx;
     const o = allOrders[idx];
-    const products = o.products ? String(o.products).split('|').map(p=>`<div class="product-line"><span>${p.trim()}</span></div>`).join('') : '';
+    const products = o.products ? o.products.split('|').map(p=>`<div class="product-line"><span>${p.trim()}</span></div>`).join('') : '';
     document.getElementById('orderDetailContent').innerHTML=`
       <div class="detail-grid">
         <div class="detail-item"><label>رقم الطلب</label><p style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:20px">${o.orderId}</p></div>
@@ -357,15 +441,17 @@
         <div class="detail-item"><label>الهاتف</label><p>${o.phone}</p></div>
         <div class="detail-item"><label>الولاية</label><p>${o.wilaya}</p></div>
         <div class="detail-item detail-full"><label>العنوان</label><p>${o.address}</p></div>
+        ${o.notes?`<div class="detail-item detail-full"><label>ملاحظات</label><p>${o.notes}</p></div>`:''}
       </div>
       <div style="margin-bottom:16px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:8px;letter-spacing:1px">المنتجات المطلوبة</label>
         <div class="products-list">${products}<div class="product-line"><span>المجموع</span><span style="color:var(--red)">${o.total}</span></div></div>
       </div>
+      <label style="display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:6px;letter-spacing:1px">تغيير الحالة</label>
       <select class="status-select" id="statusSelect">
-        <option value="جديد / New">🔴 جديد</option>
-        <option value="مؤكد / Confirmed">🟡 مؤكد</option>
-        <option value="تم التوصيل / Delivered">🟢 تم التوصيل</option>
-        <option value="ملغي / Cancelled">⚫ ملغي</option>
+        <option value="جديد / New" ${o.status.includes('New')||o.status.includes('جديد')?'selected':''}>🔴 جديد</option>
+        <option value="مؤكد / Confirmed" ${o.status.includes('Confirmed')||o.status.includes('مؤكد')?'selected':''}>🟡 مؤكد</option>
+        <option value="تم التوصيل / Delivered" ${o.status.includes('Delivered')||o.status.includes('توصيل')?'selected':''}>🟢 تم التوصيل</option>
+        <option value="ملغي / Cancelled" ${o.status.includes('Cancelled')||o.status.includes('ملغي')?'selected':''}>⚫ ملغي</option>
       </select>
       <button class="save-status-btn" onclick="saveStatusFromModal()">💾 حفظ الحالة</button>`;
     document.getElementById('orderDetailModal').classList.add('open');
@@ -377,6 +463,9 @@
     closeDetailModal();
   }
   function closeDetailModal(){ document.getElementById('orderDetailModal').classList.remove('open'); }
+
+  // Start
+  loadOrders();
 </script>
 </body>
 </html>
