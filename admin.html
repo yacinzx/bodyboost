@@ -246,7 +246,7 @@
 <script>
   // ═══════════════════════════════════════════
   // CONFIGURATION — change these values
-  const ADMIN_PASSWORD = '2005'; // ← Change this password!
+  const ADMIN_PASSWORD = 'bodyboost2025'; // ← Change this password!
   const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSDp0RR4HCb1gtDYgMlH5aJcBDq9NEOsF6OdtP4LjEPZHuV1wWBt6LaGf_7zMaVOZv/exec'; // ← From SETUP.txt
   // ═══════════════════════════════════════════
 
@@ -261,7 +261,6 @@
     if(pwd === ADMIN_PASSWORD) {
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('dashboard').classList.add('active');
-      if(GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec') document.getElementById('setupBanner').style.display='flex';
       loadOrders();
     } else {
       document.getElementById('loginError').textContent='⚠️ كلمة المرور خاطئة';
@@ -275,9 +274,8 @@
     document.getElementById('ordersTableContainer').innerHTML='<div class="loading"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div>';
 
     // Try Google Sheets first, fallback to localStorage
-    if(GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec') {
-      try {
-        const res = await fetch(GOOGLE_SCRIPT_URL + '?action=get');
+    try {
+        const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SCRIPT_URL + '?action=get'));
         const data = await res.json();
         allOrders = data.orders || [];
         // Save locally as backup
@@ -286,11 +284,6 @@
         console.warn('Could not fetch from Google Sheets, using local data');
         allOrders = JSON.parse(localStorage.getItem('bb_orders')||'[]');
       }
-    } else {
-      allOrders = JSON.parse(localStorage.getItem('bb_orders')||'[]');
-      // Add demo orders if empty
-      if(allOrders.length === 0) addDemoOrders();
-    }
 
     updateStats();
     applyFilter(currentFilter);
@@ -419,9 +412,9 @@
   async function updateStatus(idx, newStatus) {
     allOrders[idx].status = newStatus;
     localStorage.setItem('bb_orders', JSON.stringify(allOrders));
-    if(GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbz1Vzu2Hj6oq0SPWLq21YB97iXn6eZym7Z1RqQKH0279HmHl2Noio5Al4sHFHh9pl5G7g/exec'){
+    if(true){
       try {
-        await fetch(GOOGLE_SCRIPT_URL, {method:'POST', body:JSON.stringify({action:'updateStatus', orderId:allOrders[idx].orderId, status:newStatus})});
+        await fetch('https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SCRIPT_URL), {method:'POST', body:JSON.stringify({action:'updateStatus', orderId:allOrders[idx].orderId, status:newStatus})});
       } catch(e){ console.warn('Could not sync to Google Sheets'); }
     }
     updateStats();
