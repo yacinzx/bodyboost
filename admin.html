@@ -3,462 +3,573 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BodyBoost DZ — لوحة التحكم</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<title>BodyBoost DZ</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Bebas+Neue&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{--red:#e62020;--gold:#f5a623;--bg:#0a0a0a;--surface:#141414;--surface2:#1e1e1e;--text:#f0f0f0;--muted:#888;--border:#222;--green:#4caf50;--orange:#ff9800;--blue:#2196f3;--radius:12px;}
+  :root {
+    --red: #e62020; --gold: #f5a623; --dark: #0a0a0a; --dark2: #141414;
+    --dark3: #1e1e1e; --light: #f0f0f0; --muted: #888; --radius: 12px;
+    --bg: #0a0a0a; --surface: #141414; --surface2: #1e1e1e;
+    --text: #f0f0f0; --border: #222;
+  }
+  body.light-mode {
+    --bg:#f5f5f5; --surface:#ffffff; --surface2:#eeeeee;
+    --text:#111111; --border:#ddd; --muted:#666;
+  }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;direction:rtl;min-height:100vh;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;direction:rtl;transition:background .3s,color .3s;}
+  body.en{direction:ltr;font-family:'DM Sans',sans-serif;}
 
-  /* LOGIN */
-  .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at center,#1a0808 0%,#0a0a0a 70%);}
-  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:380px;text-align:center;}
-  .login-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);margin-bottom:4px;}
-  .login-logo span{color:var(--red);}
-  .login-sub{color:var(--muted);font-size:14px;margin-bottom:32px;}
-  .login-box input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:14px;font-size:15px;font-family:inherit;margin-bottom:12px;text-align:center;}
-  .login-box input:focus{outline:none;border-color:var(--red);}
-  .login-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--radius);padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;}
-  .login-btn:hover{background:#c41a1a;}
-  .login-error{color:var(--red);font-size:13px;margin-top:10px;}
+  /* NAV */
+  nav{position:sticky;top:0;z-index:200;background:rgba(10,10,10,0.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:64px;gap:12px;}
+  body.light-mode nav{background:rgba(255,255,255,0.96);}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);letter-spacing:2px;flex-shrink:0;}
+  .logo span{color:var(--red);}
+  .nav-links{display:flex;gap:20px;list-style:none;flex:1;justify-content:center;}
+  .nav-links a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;transition:color .2s;}
+  .nav-links a:hover{color:var(--gold);}
+  .nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .lang-toggle{background:var(--surface2);border:1px solid var(--border);border-radius:20px;display:flex;overflow:hidden;}
+  .lang-btn{padding:6px 12px;transition:all .2s;color:var(--muted);border:none;background:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:12px;}
+  .lang-btn.active{background:var(--red);color:#fff;border-radius:20px;}
+  .theme-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:7px 10px;cursor:pointer;font-size:16px;transition:all .2s;line-height:1;}
+  .theme-btn:hover{border-color:var(--gold);}
+  .cart-btn{background:var(--red);border:none;border-radius:8px;color:#fff;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;position:relative;}
+  .cart-btn:hover{background:#c41a1a;}
+  .cart-count{background:var(--gold);color:#000;border-radius:50%;width:18px;height:18px;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;position:absolute;top:-6px;}
+  body.en .cart-count{left:-6px;}
+  body:not(.en) .cart-count{right:-6px;}
 
-  /* DASHBOARD */
-  .dashboard{display:none;}
-  .dashboard.active{display:block;}
+  /* CART OVERLAY */
+  .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s;}
+  .cart-overlay.open{opacity:1;pointer-events:all;}
+  .cart-drawer{position:fixed;top:0;bottom:0;width:380px;max-width:95vw;background:var(--surface);border:1px solid var(--border);z-index:400;display:flex;flex-direction:column;overflow:hidden;left:0;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);}
+  body.en .cart-drawer{left:auto;right:0;transform:translateX(100%);}
+  .cart-drawer.open{transform:translateX(0) !important;}
+  .cart-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .cart-header h2{font-size:20px;font-weight:900;}
+  .cart-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:4px;}
+  .cart-close:hover{color:var(--red);}
+  .cart-items{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;}
+  .cart-empty{text-align:center;color:var(--muted);padding:40px 0;font-size:15px;}
+  .cart-item{background:var(--surface2);border-radius:var(--radius);padding:12px;display:flex;gap:12px;align-items:center;}
+  .cart-item-img{width:60px;height:60px;border-radius:8px;object-fit:cover;background:var(--border);flex-shrink:0;}
+  .cart-item-info{flex:1;}
+  .cart-item-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+  .cart-item-price{font-size:14px;font-weight:900;color:var(--red);}
+  .cart-item-qty{display:flex;align-items:center;gap:8px;margin-top:6px;}
+  .qty-btn{background:var(--border);border:none;color:var(--text);width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .qty-btn:hover{background:var(--red);color:#fff;}
+  .qty-num{font-size:14px;font-weight:700;min-width:20px;text-align:center;}
+  .cart-item-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;}
+  .cart-item-remove:hover{color:var(--red);}
+  .cart-footer{padding:16px 24px;border-top:1px solid var(--border);flex-shrink:0;}
+  .cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .cart-total-label{font-size:15px;font-weight:700;}
+  .cart-total-price{font-size:22px;font-weight:900;color:var(--red);}
+  .checkout-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--radius);padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s;}
+  .checkout-btn:hover{background:#c41a1a;}
 
-  /* TOPBAR */
-  .topbar{background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-  .topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);}
-  .topbar-logo span{color:var(--red);}
-  .topbar-title{color:var(--muted);font-size:14px;}
-  .topbar-actions{display:flex;gap:12px;align-items:center;}
-  .refresh-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 16px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:all .2s;}
-  .refresh-btn:hover{border-color:var(--gold);color:var(--gold);}
-  .logout-btn{background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);padding:8px 16px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:all .2s;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
-
-  /* MAIN */
-  .main{max-width:1400px;margin:0 auto;padding:32px 24px;}
-
-  /* STAT CARDS */
-  .stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px;}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
-  .stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 var(--radius) var(--radius) 0;}
-  .stat-card.red::before{background:var(--red);}
-  .stat-card.gold::before{background:var(--gold);}
-  .stat-card.green::before{background:var(--green);}
-  .stat-card.blue::before{background:var(--blue);}
-  .stat-icon{font-size:28px;margin-bottom:8px;}
-  .stat-value{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;}
-  .stat-card.red .stat-value{color:var(--red);}
-  .stat-card.gold .stat-value{color:var(--gold);}
-  .stat-card.green .stat-value{color:var(--green);}
-  .stat-card.blue .stat-value{color:var(--blue);}
-  .stat-label2{font-size:13px;color:var(--muted);margin-top:4px;}
-
-  /* CHART */
-  .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
-  @media(max-width:768px){.charts-row{grid-template-columns:1fr;}}
-  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
-  .chart-title{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--text);}
-  .bar-chart{display:flex;flex-direction:column;gap:8px;}
-  .bar-row{display:flex;align-items:center;gap:10px;}
-  .bar-label{font-size:12px;color:var(--muted);width:80px;text-align:right;flex-shrink:0;}
-  .bar-track{flex:1;background:var(--surface2);border-radius:4px;height:20px;overflow:hidden;}
-  .bar-fill{height:100%;border-radius:4px;transition:width .6s ease;background:var(--red);}
-  .bar-value{font-size:12px;font-weight:700;color:var(--text);width:60px;}
-  .donut-chart{display:flex;justify-content:center;align-items:center;gap:24px;flex-wrap:wrap;}
-  .donut-legend{display:flex;flex-direction:column;gap:8px;}
-  .legend-item{display:flex;align-items:center;gap:8px;font-size:13px;}
-  .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-
-  /* FILTERS */
-  .filters-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:center;}
-  .filter-btn{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s;}
-  .filter-btn.active{background:var(--red);color:#fff;border-color:var(--red);}
-  .search-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 14px;font-size:13px;font-family:inherit;min-width:200px;}
-  .search-input:focus{outline:none;border-color:var(--gold);}
-
-  /* ORDERS TABLE */
-  .orders-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-  .orders-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
-  .orders-title{font-size:18px;font-weight:700;}
-  .orders-count{font-size:13px;color:var(--muted);}
-  .table-wrap{overflow-x:auto;}
-  table{width:100%;border-collapse:collapse;}
-  th{padding:12px 16px;text-align:right;font-size:12px;font-weight:700;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;background:var(--surface2);}
-  td{padding:14px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
-  tr:last-child td{border-bottom:none;}
-  tr:hover td{background:var(--surface2);}
-  .order-id{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);}
-  .status-badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-  .status-new{background:#e6202020;color:var(--red);border:1px solid var(--red);}
-  .status-confirmed{background:#ff980020;color:var(--orange);border:1px solid var(--orange);}
-  .status-delivered{background:#4caf5020;color:var(--green);border:1px solid var(--green);}
-  .status-cancelled{background:#88888820;color:var(--muted);border:1px solid var(--muted);}
-  .action-btns{display:flex;gap:6px;}
-  .action-btn{padding:5px 10px;border-radius:6px;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:all .2s;}
-  .btn-confirm{background:#ff980020;color:var(--orange);border:1px solid var(--orange);}
-  .btn-confirm:hover{background:var(--orange);color:#000;}
-  .btn-deliver{background:#4caf5020;color:var(--green);border:1px solid var(--green);}
-  .btn-deliver:hover{background:var(--green);color:#000;}
-  .btn-cancel{background:#88888820;color:var(--muted);border:1px solid var(--muted);}
-  .btn-cancel:hover{background:var(--muted);color:#000;}
-  .btn-view{background:#2196f320;color:var(--blue);border:1px solid var(--blue);}
-  .btn-view:hover{background:var(--blue);color:#fff;}
-  .empty-state{text-align:center;padding:60px;color:var(--muted);}
-  .empty-icon{font-size:48px;margin-bottom:12px;}
-
-  /* ORDER DETAIL MODAL */
+  /* ORDER MODAL */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;padding:20px;}
   .modal-overlay.open{opacity:1;pointer-events:all;}
-  .modal{background:var(--surface);border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;border:1px solid var(--border);}
-  .modal-hdr{padding:24px 24px 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);padding-bottom:16px;}
-  .modal-hdr h2{font-size:20px;font-weight:900;}
-  .close-btn{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;}
-  .close-btn:hover{color:var(--red);}
-  .modal-content{padding:24px;}
-  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
-  .detail-item label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:3px;letter-spacing:1px;}
-  .detail-item p{font-size:14px;font-weight:700;}
-  .detail-full{grid-column:1/-1;}
-  .products-list{background:var(--surface2);border-radius:var(--radius);padding:14px;}
-  .product-line{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
-  .product-line:last-child{border-bottom:none;font-weight:900;color:var(--red);}
-  .status-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;font-family:inherit;margin-top:16px;}
-  .save-status-btn{width:100%;margin-top:10px;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
-  .save-status-btn:hover{background:#c41a1a;}
+  .modal{background:var(--surface);border-radius:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;transform:scale(.95);transition:transform .3s;border:1px solid var(--border);}
+  .modal-overlay.open .modal{transform:scale(1);}
+  .modal-header{padding:24px 24px 0;display:flex;justify-content:space-between;align-items:center;}
+  .modal-header h2{font-size:22px;font-weight:900;}
+  .modal-body{padding:20px 24px 24px;}
+  .modal-order-summary{background:var(--surface2);border-radius:var(--radius);padding:14px;margin-bottom:20px;}
+  .modal-order-item{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--border);}
+  .modal-order-item:last-child{border-bottom:none;font-weight:900;font-size:15px;color:var(--red);margin-top:4px;}
 
-  /* LOADING */
-  .loading{text-align:center;padding:40px;color:var(--muted);}
-  .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;}
+  /* SUCCESS SCREEN */
+  .success-screen{text-align:center;padding:40px 20px;}
+  .success-icon{font-size:64px;margin-bottom:16px;}
+  .success-screen h3{font-size:24px;font-weight:900;margin-bottom:8px;color:#4caf50;}
+  .success-screen p{color:var(--muted);font-size:14px;line-height:1.6;}
+  .success-order-id{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 20px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);margin:16px 0;}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,var(--bg) 0%,#1a0808 50%,var(--bg) 100%);padding:80px 24px;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'BODYBOOST';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,20vw,200px);color:rgba(255,255,255,0.03);white-space:nowrap;pointer-events:none;}
+  .hero-badge{display:inline-block;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:4px 14px;border-radius:20px;margin-bottom:16px;}
+  .hero h1{font-size:clamp(32px,6vw,64px);font-weight:900;line-height:1.1;margin-bottom:16px;}
+  .hero h1 .accent{color:var(--gold);}
+  .hero p{color:var(--muted);font-size:16px;max-width:500px;margin:0 auto 32px;}
+  .hero-cta{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .btn-primary{background:var(--red);color:#fff;padding:14px 32px;border-radius:var(--radius);border:none;cursor:pointer;font-size:15px;font-weight:700;font-family:inherit;transition:transform .2s,background .2s;}
+  .btn-primary:hover{transform:translateY(-2px);background:#c41a1a;}
+  .btn-secondary{background:transparent;color:var(--text);padding:14px 32px;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;font-size:15px;font-weight:700;font-family:inherit;transition:border-color .2s;}
+  .btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+
+  /* STATS */
+  .stats-bar{background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;justify-content:center;flex-wrap:wrap;}
+  .stat{padding:20px 40px;text-align:center;border-left:1px solid var(--border);}
+  .stat:first-child{border-left:none;}
+  body.en .stat:first-child{border-left:1px solid var(--border);}
+  body.en .stat:last-child{border-left:none;}
+  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);}
+  .stat-label{font-size:12px;color:var(--muted);margin-top:2px;}
+
+  /* SECTION */
+  section{padding:60px 24px;max-width:1200px;margin:0 auto;}
+  .section-line{display:block;width:40px;height:4px;background:var(--red);border-radius:2px;margin-bottom:8px;}
+  .section-title{font-size:28px;font-weight:900;margin-bottom:8px;}
+  .section-sub{color:var(--muted);font-size:14px;margin-bottom:32px;}
+
+  /* CATS */
+  .cats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+  .cat-btn{padding:8px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s;}
+  .cat-btn.active,.cat-btn:hover{background:var(--red);color:#fff;border-color:var(--red);}
+
+  /* PRODUCTS */
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
+  .product-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;cursor:pointer;}
+  .product-card:hover{transform:translateY(-4px);border-color:var(--red);}
+  .product-img{background:linear-gradient(135deg,#1a1a2e,#16213e);height:180px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;overflow:hidden;}
+  .product-img img{width:100%;height:100%;object-fit:cover;}
+  .product-badge{position:absolute;top:10px;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;z-index:1;}
+  body.en .product-badge{right:10px;}
+  body:not(.en) .product-badge{left:10px;}
+  .product-info{padding:16px;}
+  .product-brand{font-size:11px;color:var(--gold);font-weight:700;margin-bottom:4px;letter-spacing:1px;}
+  .product-name{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--text);}
+  .product-price{font-size:18px;font-weight:900;color:var(--red);}
+  .product-price span{font-size:12px;color:var(--muted);}
+  .add-to-cart{width:100%;margin-top:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:background .2s,border-color .2s;}
+  .add-to-cart:hover{background:var(--red);border-color:var(--red);color:#fff;}
+
+  /* SOCIAL */
+  .social-section{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:60px 24px;text-align:center;}
+  .social-label{font-size:12px;font-weight:700;letter-spacing:3px;color:var(--gold);margin-bottom:10px;}
+  .social-big-title{font-family:'Bebas Neue',sans-serif;font-size:38px;margin-bottom:8px;letter-spacing:2px;}
+  .social-sub{color:var(--muted);font-size:15px;margin-bottom:36px;}
+  .social-cards{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;}
+  .social-card{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:28px 24px;width:170px;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:12px;transition:transform .25s cubic-bezier(.34,1.56,.64,1),border-color .25s,box-shadow .25s;position:relative;overflow:hidden;}
+  .social-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s;border-radius:20px;}
+  .social-card:hover{transform:translateY(-6px);}
+  .social-card.fb:hover{border-color:#1877f2;box-shadow:0 8px 32px #1877f230;}
+  .social-card.fb:hover::before{opacity:1;background:linear-gradient(135deg,#1877f215,#1877f205);}
+  .social-card.ig:hover{border-color:#e1306c;box-shadow:0 8px 32px #e1306c30;}
+  .social-card.ig:hover::before{opacity:1;background:linear-gradient(135deg,#e1306c15,#f5650505);}
+  .social-card.tg:hover{border-color:#2aabee;box-shadow:0 8px 32px #2aabee30;}
+  .social-card.tg:hover::before{opacity:1;background:linear-gradient(135deg,#2aabee15,#2aabee05);}
+  .social-icon-wrap{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
+  .fb .social-icon-wrap{background:#1877f215;}
+  .ig .social-icon-wrap{background:linear-gradient(135deg,#f5650515,#e1306c15);}
+  .tg .social-icon-wrap{background:#2aabee15;}
+  .social-icon-wrap svg{width:30px;height:30px;}
+  .fb svg{fill:#1877f2;} .ig svg{fill:url(#igGrad);} .tg svg{fill:#2aabee;}
+  .social-name{font-size:14px;font-weight:700;color:var(--text);position:relative;z-index:1;}
+  .social-handle{font-size:11px;color:var(--muted);position:relative;z-index:1;}
+
+  /* CONTACT */
+  .contact-section{background:var(--surface2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+  .contact-inner{max-width:1200px;margin:0 auto;padding:60px 24px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+  @media(max-width:768px){.contact-inner{grid-template-columns:1fr;gap:40px;}}
+  .contact-info h2{font-size:28px;font-weight:900;margin-bottom:12px;}
+  .contact-info p{color:var(--muted);line-height:1.7;margin-bottom:24px;}
+  .contact-detail{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:14px;}
+  .contact-icon{font-size:20px;}
+  .form-group{margin-bottom:16px;}
+  .form-group label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--muted);}
+  .form-group input,.form-group textarea,.form-group select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:12px 14px;font-size:14px;font-family:inherit;transition:border-color .2s;resize:vertical;}
+  .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--red);}
+  .form-group textarea{min-height:100px;}
+  .form-group select option{background:var(--surface);}
+  #form-msg{margin-top:12px;font-size:14px;font-weight:700;}
+  #form-msg.success{color:#4caf50;} #form-msg.error{color:var(--red);}
+  .modal-form .form-group input,.modal-form .form-group textarea,.modal-form .form-group select{background:var(--surface2);}
+
+  footer{background:var(--surface);border-top:1px solid var(--border);text-align:center;padding:30px 24px;color:var(--muted);font-size:13px;}
+  .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);margin-bottom:8px;}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#222;color:#fff;padding:12px 24px;border-radius:50px;font-size:14px;font-weight:700;z-index:999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);border:1px solid #333;white-space:nowrap;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  /* SPINNER */
+  .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-left:8px;}
   @keyframes spin{to{transform:rotate(360deg);}}
 
-  /* SETUP BANNER */
-  .setup-banner{background:linear-gradient(135deg,#f5a62320,#e6202020);border:1px solid var(--gold);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px;}
-  .setup-banner-icon{font-size:24px;flex-shrink:0;}
-  .setup-banner p{font-size:13px;line-height:1.6;}
-  .setup-banner strong{color:var(--gold);}
-  .setup-banner a{color:var(--gold);font-weight:700;}
-
   @media(max-width:600px){
-    .stat-cards{grid-template-columns:1fr 1fr;}
-    .topbar-title{display:none;}
-    th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){display:none;}
+    .nav-links{display:none;}
+    .stats-bar{flex-direction:column;}
+    .stat{border-left:none;border-top:1px solid var(--border);}
   }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">BODY<span>BOOST</span>.DZ</div>
-    <div class="login-sub">لوحة تحكم البائع | Seller Dashboard</div>
-    <input type="password" id="passwordInput" placeholder="كلمة المرور / Password" onkeydown="if(event.key==='Enter')login()">
-    <button class="login-btn" onclick="login()">دخول / Login</button>
-    <div class="login-error" id="loginError"></div>
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h2 class="t" data-ar="🛒 سلة المشتريات" data-en="🛒 Shopping Cart">🛒 سلة المشتريات</h2>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty t" data-ar="السلة فارغة 🛒" data-en="Cart is empty 🛒">السلة فارغة 🛒</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span class="cart-total-label t" data-ar="المجموع:" data-en="Total:">المجموع:</span>
+      <span class="cart-total-price" id="cartTotal">0 DA</span>
+    </div>
+    <button class="checkout-btn t" data-ar="🎯 إتمام الطلب" data-en="🎯 Place Order" onclick="openOrderModal()">🎯 إتمام الطلب</button>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard">
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div style="display:flex;align-items:center;gap:16px;">
-      <div class="topbar-logo">BODY<span>BOOST</span>.DZ</div>
-      <div class="topbar-title">لوحة التحكم | Admin Dashboard</div>
-    </div>
-    <div class="topbar-actions">
-      <button class="refresh-btn" onclick="loadOrders()">🔄 تحديث</button>
-      <button class="logout-btn" onclick="logout()">خروج ↩</button>
-    </div>
-  </div>
-
-  <div class="main">
-
-    <!-- SETUP BANNER (shown if not configured) -->
-    <div class="setup-banner" id="setupBanner" style="display:none">
-      <div class="setup-banner-icon">⚠️</div>
-      <div>
-        <p><strong>لم يتم ربط Google Sheets بعد!</strong> اتبع تعليمات ملف <strong>SETUP.txt</strong> لربط الموقع بقاعدة البيانات. حتى ذلك الحين، البيانات تُحفظ محلياً في المتصفح فقط.</p>
-      </div>
-    </div>
-
-    <!-- STAT CARDS -->
-    <div class="stat-cards">
-      <div class="stat-card red"><div class="stat-icon">📦</div><div class="stat-value" id="statTotal">0</div><div class="stat-label2">إجمالي الطلبات</div></div>
-      <div class="stat-card gold"><div class="stat-icon">🔴</div><div class="stat-value" id="statNew">0</div><div class="stat-label2">طلبات جديدة</div></div>
-      <div class="stat-card blue"><div class="stat-icon">✅</div><div class="stat-value" id="statConfirmed">0</div><div class="stat-label2">مؤكدة</div></div>
-      <div class="stat-card green"><div class="stat-icon">🚚</div><div class="stat-value" id="statDelivered">0</div><div class="stat-label2">تم التوصيل</div></div>
-      <div class="stat-card gold"><div class="stat-icon">💰</div><div class="stat-value" id="statRevenue">0</div><div class="stat-label2">إجمالي المبيعات (DA)</div></div>
-    </div>
-
-    <!-- CHARTS -->
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-title">📊 حالة الطلبات</div>
-        <div id="statusChart" class="bar-chart"></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">🏆 أكثر الولايات طلباً</div>
-        <div id="wilayaChart" class="bar-chart"></div>
-      </div>
-    </div>
-
-    <!-- FILTERS -->
-    <div class="filters-bar">
-      <button class="filter-btn active" onclick="filterOrders('all',this)">الكل</button>
-      <button class="filter-btn" onclick="filterOrders('جديد / New',this)">🔴 جديد</button>
-      <button class="filter-btn" onclick="filterOrders('مؤكد / Confirmed',this)">🟡 مؤكد</button>
-      <button class="filter-btn" onclick="filterOrders('تم التوصيل / Delivered',this)">🟢 تم التوصيل</button>
-      <button class="filter-btn" onclick="filterOrders('ملغي / Cancelled',this)">⚫ ملغي</button>
-      <input type="text" class="search-input" id="searchInput" placeholder="🔍 بحث باسم أو رقم الطلب..." oninput="searchOrders(this.value)">
-    </div>
-
-    <!-- ORDERS TABLE -->
-    <div class="orders-card">
-      <div class="orders-header">
-        <div class="orders-title">📋 قائمة الطلبات</div>
-        <div class="orders-count" id="ordersCount">0 طلب</div>
-      </div>
-      <div class="table-wrap">
-        <div id="ordersTableContainer">
-          <div class="loading"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ORDER DETAIL MODAL -->
-<div class="modal-overlay" id="orderDetailModal">
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="orderModal">
   <div class="modal">
-    <div class="modal-hdr">
-      <h2>تفاصيل الطلب</h2>
-      <button class="close-btn" onclick="closeDetailModal()">✕</button>
+    <div class="modal-header">
+      <h2 class="t" data-ar="تأكيد الطلب" data-en="Confirm Order">تأكيد الطلب</h2>
+      <button class="cart-close" onclick="closeOrderModal()">✕</button>
     </div>
-    <div class="modal-content" id="orderDetailContent"></div>
+    <div class="modal-body modal-form" id="modalBody">
+      <div class="modal-order-summary" id="modalOrderSummary"></div>
+      <div class="form-group">
+        <label class="t" data-ar="الاسم الكامل *" data-en="Full Name *">الاسم الكامل *</label>
+        <input type="text" id="o-name">
+      </div>
+      <div class="form-group">
+        <label class="t" data-ar="رقم الهاتف *" data-en="Phone Number *">رقم الهاتف *</label>
+        <input type="tel" id="o-phone">
+      </div>
+      <div class="form-group">
+        <label class="t" data-ar="الولاية *" data-en="Wilaya *">الولاية *</label>
+        <input type="text" id="o-wilaya">
+      </div>
+      <div class="form-group">
+        <label class="t" data-ar="العنوان الكامل *" data-en="Full Address *">العنوان الكامل *</label>
+        <textarea id="o-address" style="min-height:70px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="t" data-ar="ملاحظات إضافية" data-en="Additional Notes">ملاحظات إضافية</label>
+        <textarea id="o-notes" style="min-height:60px"></textarea>
+      </div>
+      <button class="btn-primary" style="width:100%;font-size:16px;" id="submitOrderBtn" onclick="submitOrder()">
+        <span class="t" data-ar="✅ إرسال الطلب" data-en="✅ Send Order">✅ إرسال الطلب</span>
+      </button>
+      <div id="order-msg" style="margin-top:12px;font-size:14px;font-weight:700;text-align:center;"></div>
+    </div>
   </div>
 </div>
 
-<script>
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">BODY<span>BOOST</span>.DZ</div>
+  <ul class="nav-links">
+    <li><a href="#products" class="t" data-ar="المنتجات" data-en="Products">المنتجات</a></li>
+    <li><a href="#social" class="t" data-ar="تواصل معنا" data-en="Social">تواصل معنا</a></li>
+    <li><a href="#contact" class="t" data-ar="اتصل بنا" data-en="Contact">اتصل بنا</a></li>
+  </ul>
+  <div class="nav-actions">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ar')">AR</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 <span class="t" data-ar="السلة" data-en="Cart">السلة</span>
+      <span class="cart-count" id="cartCount" style="display:none">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge t" data-ar="🚚 توصيل لـ 69 ولاية" data-en="🚚 Delivery to 69 Wilayas">🚚 توصيل لـ 69 ولاية</div>
+  <h1 class="t" data-ar='أفضل <span class="accent">المكملات</span><br>بأفضل الأسعار' data-en='Best <span class="accent">Supplements</span><br>Best Prices'>أفضل <span class="accent">المكملات</span><br>بأفضل الأسعار</h1>
+  <p class="t" data-ar="مكملات غذائية أصلية 100% — OstroVit, BioTech, MyVitamins وأكثر" data-en="100% authentic sports nutrition — OstroVit, BioTech, MyVitamins & more">مكملات غذائية أصلية 100% — OstroVit, BioTech, MyVitamins وأكثر</p>
+  <div class="hero-cta">
+    <button class="btn-primary t" data-ar="تسوّق الآن" data-en="Shop Now" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">تسوّق الآن</button>
+    <button class="btn-secondary t" data-ar="اتصل بنا" data-en="Contact Us" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">اتصل بنا</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">3,719+</div><div class="stat-label t" data-ar="متابع" data-en="Followers">متابع</div></div>
+  <div class="stat"><div class="stat-num">69</div><div class="stat-label t" data-ar="ولاية توصيل" data-en="Wilaya Delivery">ولاية توصيل</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label t" data-ar="منتجات أصلية" data-en="Authentic Products">منتجات أصلية</div></div>
+  <div class="stat"><div class="stat-num">94+</div><div class="stat-label t" data-ar="منتج متاح" data-en="Products Available">منتج متاح</div></div>
+</div>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <span class="section-line"></span>
+  <div class="section-title t" data-ar="منتجاتنا" data-en="Our Products">منتجاتنا</div>
+  <p class="section-sub t" data-ar="أفضل المكملات الغذائية المتوفرة" data-en="Top sports nutrition supplements available">أفضل المكملات الغذائية المتوفرة</p>
+  <div class="cats">
+    <button class="cat-btn active t" data-ar="الكل" data-en="All">الكل</button>
+    <button class="cat-btn t" data-ar="بروتين" data-en="Protein">بروتين</button>
+    <button class="cat-btn t" data-ar="كرياتين" data-en="Creatine">كرياتين</button>
+    <button class="cat-btn t" data-ar="فيتامينات" data-en="Vitamins">فيتامينات</button>
+    <button class="cat-btn t" data-ar="Pre-Workout" data-en="Pre-Workout">Pre-Workout</button>
+    <button class="cat-btn t" data-ar="كولاجين" data-en="Collagen">كولاجين</button>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <div class="product-card" data-id="1" data-name-ar="كرياتين مونوهيدرات 300g" data-name-en="Creatine Monohydrate 300g" data-price="2800" data-img="https://www.performecenternutrition.com/1857-large_default/creatine-monohydrate-neutre.jpg">
+      <div class="product-img"><img src="https://www.performecenternutrition.com/1857-large_default/creatine-monohydrate-neutre.jpg" alt="Creatine" onerror="this.style.display='none'"><div class="product-badge t" data-ar="جديد" data-en="NEW">جديد</div></div>
+      <div class="product-info"><div class="product-brand">OSTROVIT</div><div class="product-name t" data-ar="كرياتين مونوهيدرات 300g" data-en="Creatine Monohydrate 300g">كرياتين مونوهيدرات 300g</div><div class="product-price">2,800 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+    <div class="product-card" data-id="2" data-name-ar="فيتامين D3 + كالسيوم" data-name-en="Vitamin D3 + Calcium" data-price="1900" data-img="https://static.ostrovit.com/catalog/product/cache/image/1800x1800/e9c3970ab036de70892d86c6d221abfe/v/i/vitamin_d3_k2_1000_iu_200_mcg_90_tabs_en.png">
+      <div class="product-img"><img src="https://static.ostrovit.com/catalog/product/cache/image/1800x1800/e9c3970ab036de70892d86c6d221abfe/v/i/vitamin_d3_k2_1000_iu_200_mcg_90_tabs_en.png" alt="Vit D3" onerror="this.style.display='none'"></div>
+      <div class="product-info"><div class="product-brand">OSTROVIT</div><div class="product-name t" data-ar="فيتامين D3 + كالسيوم" data-en="Vitamin D3 + Calcium">فيتامين D3 + كالسيوم</div><div class="product-price">1,900 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+    <div class="product-card" data-id="3" data-name-ar="100% كرياتين 500g" data-name-en="100% Creatine 500g" data-price="6200" data-img="https://www.nocsy.fr/wp-content/uploads/2024/08/avis-creatine-biotech-usa.jpg">
+      <div class="product-img"><img src="https://www.nocsy.fr/wp-content/uploads/2024/08/avis-creatine-biotech-usa.jpg" alt="BioTech" onerror="this.style.display='none'"><div class="product-badge t" data-ar="متوفر" data-en="IN STOCK">متوفر</div></div>
+      <div class="product-info"><div class="product-brand">BIOTECHUSA</div><div class="product-name t" data-ar="100% كرياتين 500g" data-en="100% Creatine 500g">100% كرياتين 500g</div><div class="product-price">6,200 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+    <div class="product-card" data-id="4" data-name-ar="أشواغاندا KSM-66" data-name-en="Ashwagandha KSM-66" data-price="2500" data-img="">
+      <div class="product-img" style="font-size:48px">🌿</div>
+      <div class="product-info"><div class="product-brand">MYVITAMINS</div><div class="product-name t" data-ar="أشواغاندا KSM-66" data-en="Ashwagandha KSM-66">أشواغاندا KSM-66</div><div class="product-price">2,500 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+    <div class="product-card" data-id="5" data-name-ar="PUMP Pre-Workout 300g" data-name-en="PUMP Pre-Workout 300g" data-price="3800" data-img="https://static.ostrovit.com/catalog/product/cache/image/1800x1800/e9c3970ab036de70892d86c6d221abfe/p/u/pump_300g_cherry_en.png">
+      <div class="product-img"><img src="https://static.ostrovit.com/catalog/product/cache/image/1800x1800/e9c3970ab036de70892d86c6d221abfe/p/u/pump_300g_cherry_en.png" alt="PUMP" onerror="this.parentElement.innerHTML='🔥'"><div class="product-badge t" data-ar="جديد" data-en="NEW">جديد</div></div>
+      <div class="product-info"><div class="product-brand">OSTROVIT</div><div class="product-name t" data-ar="PUMP Pre-Workout 300g" data-en="PUMP Pre-Workout 300g">PUMP Pre-Workout 300g</div><div class="product-price">3,800 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+    <div class="product-card" data-id="6" data-name-ar="BCAA + Glutamine 1000g" data-name-en="BCAA + Glutamine 1000g" data-price="4500" data-img="https://static.ostrovit.com/catalog/product/cache/image/1800x1800/e9c3970ab036de70892d86c6d221abfe/b/c/bcaa_glutamine_1000g_strawberry_blueberry_en.png">
+      <div class="product-img"><img src="https://static.ostrovit.com/catalog/product/cache/image/1800x1800/e9c3970ab036de70892d86c6d221abfe/b/c/bcaa_glutamine_1000g_strawberry_blueberry_en.png" alt="BCAA" onerror="this.parentElement.innerHTML='💪'"></div>
+      <div class="product-info"><div class="product-brand">OSTROVIT</div><div class="product-name t" data-ar="BCAA + Glutamine 1000g" data-en="BCAA + Glutamine 1000g">BCAA + Glutamine 1000g</div><div class="product-price">4,500 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+    <div class="product-card" data-id="7" data-name-ar="كولاجين بحري 110 كبسولة" data-name-en="Marine Collagen 110 caps" data-price="3200" data-img="">
+      <div class="product-img" style="font-size:48px">✨</div>
+      <div class="product-info"><div class="product-brand">OSTROVIT</div><div class="product-name t" data-ar="كولاجين بحري 110 كبسولة" data-en="Marine Collagen 110 caps">كولاجين بحري 110 كبسولة</div><div class="product-price">3,200 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+    <div class="product-card" data-id="8" data-name-ar="Beauty Blend بشرة وشعر" data-name-en="Beauty Blend Hair & Skin" data-price="2800" data-img="">
+      <div class="product-img" style="font-size:48px">🌸</div>
+      <div class="product-info"><div class="product-brand">OSTROVIT</div><div class="product-name t" data-ar="Beauty Blend بشرة وشعر" data-en="Beauty Blend Hair & Skin">Beauty Blend بشرة وشعر</div><div class="product-price">2,800 <span>DA</span></div><button class="add-to-cart t" data-ar="🛒 أضف للسلة" data-en="🛒 Add to Cart" onclick="addToCart(this)">🛒 أضف للسلة</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL -->
+<div class="social-section" id="social">
+  <div class="social-label t" data-ar="تابعونا" data-en="FOLLOW US">تابعونا</div>
+  <div class="social-big-title t" data-ar="تواصل معنا" data-en="Find Us Online">تواصل معنا</div>
+  <p class="social-sub t" data-ar="ابق على اطلاع بأحدث المنتجات والعروض" data-en="Stay updated on new products and offers">ابق على اطلاع بأحدث المنتجات والعروض</p>
+  <div class="social-cards">
+    <a class="social-card fb" href="https://facebook.com/bodyboost.dz" target="_blank">
+      <div class="social-icon-wrap"><svg viewBox="0 0 24 24"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.514c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></div>
+      <div class="social-name">Facebook</div><div class="social-handle">@bodyboost.dz</div>
+    </a>
+    <a class="social-card ig" href="https://instagram.com/bodyboost.dz" target="_blank">
+      <div class="social-icon-wrap">
+        <svg viewBox="0 0 24 24"><defs><linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f09433"/><stop offset="25%" style="stop-color:#e6683c"/><stop offset="50%" style="stop-color:#dc2743"/><stop offset="75%" style="stop-color:#cc2366"/><stop offset="100%" style="stop-color:#bc1888"/></linearGradient></defs>
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      </div>
+      <div class="social-name">Instagram</div><div class="social-handle">@bodyboost.dz</div>
+    </a>
+    <a class="social-card tg" href="https://t.me/bodyboostdz" target="_blank">
+      <div class="social-icon-wrap"><svg viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></div>
+      <div class="social-name">Telegram</div><div class="social-handle">@bodyboostdz</div>
+    </a>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-info">
+      <span class="section-line"></span>
+      <h2 class="t" data-ar="اتصل بنا" data-en="Contact Us">اتصل بنا</h2>
+      <p class="t" data-ar="هل لديك استفسار؟ راسلنا مباشرة وسنرد عليك في أقرب وقت." data-en="Have a question? Message us directly and we'll get back to you shortly.">هل لديك استفسار؟ راسلنا مباشرة وسنرد عليك في أقرب وقت.</p>
+      <div class="contact-detail"><span class="contact-icon">📸</span> @bodyboost.dz</div>
+      <div class="contact-detail"><span class="contact-icon">📦</span><span class="t" data-ar="توصيل لـ 69 ولاية" data-en="Delivery to 69 Wilayas">توصيل لـ 69 ولاية</span></div>
+      <div class="contact-detail"><span class="contact-icon">✅</span><span class="t" data-ar="منتجات أصلية 100%" data-en="100% Authentic Products">منتجات أصلية 100%</span></div>
+      <div class="contact-detail"><span class="contact-icon">📧</span> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8bf2eae8e2e5f1e9eae8b9bbb9b8cbece6eae2e7a5e8e4e6">[email&#160;protected]</a></div>
+    </div>
+    <div>
+      <div class="form-group"><label class="t" data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label><input type="text" id="f-name"></div>
+      <div class="form-group"><label class="t" data-ar="البريد الإلكتروني" data-en="Email Address">البريد الإلكتروني</label><input type="email" id="f-email"></div>
+      <div class="form-group"><label class="t" data-ar="رقم الهاتف" data-en="Phone Number">رقم الهاتف</label><input type="tel" id="f-phone"></div>
+      <div class="form-group">
+        <label class="t" data-ar="الموضوع" data-en="Subject">الموضوع</label>
+        <select id="f-subject">
+          <option value="order" data-ar="طلب منتج" data-en="Product Order">طلب منتج</option>
+          <option value="inquiry" data-ar="استفسار عن منتج" data-en="Product Inquiry">استفسار عن منتج</option>
+          <option value="delivery" data-ar="الشحن والتوصيل" data-en="Shipping & Delivery">الشحن والتوصيل</option>
+          <option value="other" data-ar="أخرى" data-en="Other">أخرى</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="t" data-ar="الرسالة" data-en="Message">الرسالة</label><textarea id="f-msg"></textarea></div>
+      <button class="btn-primary" style="width:100%" onclick="submitContactForm()"><span class="t" data-ar="إرسال الرسالة" data-en="Send Message">إرسال الرسالة</span></button>
+      <div id="form-msg"></div>
+    </div>
+  </div>
+</div>
+
+<footer id="about">
+  <div class="footer-logo">BODYBOOST.DZ</div>
+  <p class="t" data-ar="أفضل المكملات الغذائية بأفضل الأسعار في الجزائر" data-en="Best supplements at the best prices in Algeria">أفضل المكملات الغذائية بأفضل الأسعار في الجزائر</p>
+  <p style="margin-top:8px;font-size:12px;">© 2025 BodyBoost DZ · @bodyboost.dz</p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ═══════════════════════════════════════════
-  // CONFIGURATION — change these values
-  const ADMIN_PASSWORD = 'bodyboost2025'; // ← Change this password!
-  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSDp0RR4HCb1gtDYgMlH5aJcBDq9NEOsF6OdtP4LjEPZHuV1wWBt6LaGf_7zMaVOZv/exec'; // ← From SETUP.txt
+  // !! IMPORTANT: PASTE YOUR GOOGLE SCRIPT URL HERE
+  // Follow the SETUP.txt instructions to get this URL
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSDp0RR4HCb1gtDYgMlH5aJcBDq9NEOsF6OdtP4LjEPZHuV1wWBt6LaGf_7zMaVOZv/exec';
   // ═══════════════════════════════════════════
 
-  let allOrders = [];
-  let filteredOrders = [];
-  let currentFilter = 'all';
-  let currentOrderIndex = null;
+  let currentLang = 'ar';
+  let cart = [];
 
-  // ── AUTH ──
-  function login() {
-    const pwd = document.getElementById('passwordInput').value;
-    if(pwd === ADMIN_PASSWORD) {
-      document.getElementById('loginScreen').style.display='none';
-      document.getElementById('dashboard').classList.add('active');
-      loadOrders();
-    } else {
-      document.getElementById('loginError').textContent='⚠️ كلمة المرور خاطئة';
+  function setLang(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.body.classList.toggle('en', lang === 'en');
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+    document.querySelectorAll('.t').forEach(el => { const v = el.getAttribute('data-'+lang); if(v) el.innerHTML = v; });
+    document.querySelectorAll('select option').forEach(opt => { const v = opt.getAttribute('data-'+lang); if(v) opt.textContent = v; });
+    const labels = {
+      ar:{name:'أدخل اسمك',email:'example@email.com',phone:'0XX XXX XXXX',msg:'اكتب رسالتك هنا...'},
+      en:{name:'Enter your name',email:'example@email.com',phone:'0XX XXX XXXX',msg:'Type your message here...'}
+    };
+    if(document.getElementById('f-name')){
+      document.getElementById('f-name').placeholder=labels[lang].name;
+      document.getElementById('f-email').placeholder=labels[lang].email;
+      document.getElementById('f-phone').placeholder=labels[lang].phone;
+      document.getElementById('f-msg').placeholder=labels[lang].msg;
     }
-  }
-  function logout() { document.getElementById('loginScreen').style.display='flex'; document.getElementById('dashboard').classList.remove('active'); document.getElementById('passwordInput').value=''; }
-  document.getElementById('passwordInput').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
-
-  // ── LOAD ORDERS ──
-  async function loadOrders() {
-    document.getElementById('ordersTableContainer').innerHTML='<div class="loading"><div class="spinner"></div><p style="margin-top:12px">جاري التحميل...</p></div>';
-
-    // Try Google Sheets first, fallback to localStorage
-    try {
-        const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SCRIPT_URL + '?action=get'));
-        const data = await res.json();
-        allOrders = data.orders || [];
-        // Save locally as backup
-        localStorage.setItem('bb_orders', JSON.stringify(allOrders));
-      } catch(e) {
-        console.warn('Could not fetch from Google Sheets, using local data');
-        allOrders = JSON.parse(localStorage.getItem('bb_orders')||'[]');
-      }
-
-    updateStats();
-    applyFilter(currentFilter);
+    renderCart();
   }
 
-  function addDemoOrders() {
-    allOrders = [
-    ];
-    localStorage.setItem('bb_orders', JSON.stringify(allOrders));
+  function toggleTheme() {
+    document.body.classList.toggle('light-mode');
+    document.getElementById('themeBtn').textContent = document.body.classList.contains('light-mode') ? '🌙' : '☀️';
   }
 
-  // ── STATS ──
-  function updateStats() {
-    const total = allOrders.length;
-    const newOrders = allOrders.filter(o=>o.status.includes('New')||o.status.includes('جديد')).length;
-    const confirmed = allOrders.filter(o=>o.status.includes('Confirmed')||o.status.includes('مؤكد')).length;
-    const delivered = allOrders.filter(o=>o.status.includes('Delivered')||o.status.includes('توصيل')).length;
-    const revenue = allOrders
-      .filter(o=>!o.status.includes('Cancelled')&&!o.status.includes('ملغي'))
-      .reduce((sum,o)=>sum+parseInt(o.total.replace(/[^0-9]/g,'')||0),0);
-
-    document.getElementById('statTotal').textContent=total;
-    document.getElementById('statNew').textContent=newOrders;
-    document.getElementById('statConfirmed').textContent=confirmed;
-    document.getElementById('statDelivered').textContent=delivered;
-    document.getElementById('statRevenue').textContent=revenue.toLocaleString();
-
-    renderCharts(newOrders, confirmed, delivered, allOrders.filter(o=>o.status.includes('Cancelled')||o.status.includes('ملغي')).length);
+  // ── CART ──
+  function addToCart(btn) {
+    const card = btn.closest('.product-card');
+    const id=card.dataset.id, nameAr=card.dataset.nameAr, nameEn=card.dataset.nameEn;
+    const price=parseInt(card.dataset.price), img=card.dataset.img;
+    const existing=cart.find(i=>i.id===id);
+    if(existing) existing.qty++; else cart.push({id,nameAr,nameEn,price,img,qty:1});
+    updateCartCount(); renderCart();
+    showToast(currentLang==='ar'?'✅ تمت الإضافة للسلة':'✅ Added to cart');
   }
+  function updateCartCount() {
+    const total=cart.reduce((s,i)=>s+i.qty,0);
+    const el=document.getElementById('cartCount');
+    el.textContent=total; el.style.display=total>0?'flex':'none';
+  }
+  function renderCart() {
+    const container=document.getElementById('cartItems');
+    if(cart.length===0){ container.innerHTML=`<div class="cart-empty">${currentLang==='ar'?'السلة فارغة 🛒':'Cart is empty 🛒'}</div>`; document.getElementById('cartTotal').textContent='0 DA'; return; }
+    let html='',total=0;
+    cart.forEach(item=>{
+      const name=currentLang==='ar'?item.nameAr:item.nameEn; total+=item.price*item.qty;
+      html+=`<div class="cart-item">
+        <img class="cart-item-img" src="${item.img}" onerror="this.style.display='none'">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${name}</div>
+          <div class="cart-item-price">${(item.price*item.qty).toLocaleString()} DA</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
+          </div>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart('${item.id}')">🗑</button>
+      </div>`;
+    });
+    container.innerHTML=html; document.getElementById('cartTotal').textContent=total.toLocaleString()+' DA';
+  }
+  function changeQty(id,delta){ const item=cart.find(i=>i.id===id); if(!item)return; item.qty+=delta; if(item.qty<=0)cart=cart.filter(i=>i.id!==id); updateCartCount(); renderCart(); }
+  function removeFromCart(id){ cart=cart.filter(i=>i.id!==id); updateCartCount(); renderCart(); }
+  function openCart(){ document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartDrawer').classList.add('open'); }
+  function closeCart(){ document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); }
 
-  // ── CHARTS ──
-  function renderCharts(newC, confirmed, delivered, cancelled) {
-    const total = newC+confirmed+delivered+cancelled||1;
-    const statuses = [
-      {label:'جديد',value:newC,color:'var(--red)'},
-      {label:'مؤكد',value:confirmed,color:'var(--orange)'},
-      {label:'تم التوصيل',value:delivered,color:'var(--green)'},
-      {label:'ملغي',value:cancelled,color:'var(--muted)'},
-    ];
-    document.getElementById('statusChart').innerHTML = statuses.map(s=>`
-      <div class="bar-row">
-        <div class="bar-label">${s.label}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${(s.value/total*100).toFixed(0)}%;background:${s.color}"></div></div>
-        <div class="bar-value">${s.value}</div>
-      </div>`).join('');
+  // ── ORDER MODAL ──
+  function openOrderModal() {
+    if(cart.length===0){ showToast(currentLang==='ar'?'⚠️ السلة فارغة':'⚠️ Cart is empty'); return; }
+    closeCart();
+    let summaryHtml='',total=0;
+    cart.forEach(item=>{
+      const name=currentLang==='ar'?item.nameAr:item.nameEn; const sub=item.price*item.qty; total+=sub;
+      summaryHtml+=`<div class="modal-order-item"><span>${name} × ${item.qty}</span><span>${sub.toLocaleString()} DA</span></div>`;
+    });
+    summaryHtml+=`<div class="modal-order-item"><span>${currentLang==='ar'?'المجموع':'Total'}</span><span>${total.toLocaleString()} DA</span></div>`;
+    document.getElementById('modalOrderSummary').innerHTML=summaryHtml;
+    document.getElementById('order-msg').textContent='';
+    document.getElementById('orderModal').classList.add('open');
+  }
+  function closeOrderModal(){ document.getElementById('orderModal').classList.remove('open'); }
 
-    // Wilaya chart
-    const wilayas = {};
-    allOrders.forEach(o=>{ if(o.wilaya) wilayas[o.wilaya]=(wilayas[o.wilaya]||0)+1; });
-    const top5 = Object.entries(wilayas).sort((a,b)=>b[1]-a[1]).slice(0,5);
-    const maxW = top5[0]?.[1]||1;
-    document.getElementById('wilayaChart').innerHTML = top5.length ? top5.map(([w,v])=>`
-      <div class="bar-row">
-        <div class="bar-label">${w}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${(v/maxW*100).toFixed(0)}%;background:var(--gold)"></div></div>
-        <div class="bar-value">${v}</div>
-      </div>`).join('') : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px">لا توجد بيانات بعد</div>';
-  }
+  async function submitOrder() {
+    const name=document.getElementById('o-name').value.trim();
+    const phone=document.getElementById('o-phone').value.trim();
+    const wilaya=document.getElementById('o-wilaya').value.trim();
+    const address=document.getElementById('o-address').value.trim();
+    const notes=document.getElementById('o-notes').value.trim();
+    const msgEl=document.getElementById('order-msg');
+    const btn=document.getElementById('submitOrderBtn');
 
-  // ── FILTER ──
-  function filterOrders(filter, btn) {
-    currentFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    applyFilter(filter);
-  }
-  function applyFilter(filter) {
-    if(filter==='all') filteredOrders=[...allOrders];
-    else filteredOrders=allOrders.filter(o=>o.status===filter||o.status.includes(filter.split(' ')[0]));
-    const search=document.getElementById('searchInput')?.value||'';
-    if(search) applySearch(search);
-    else renderTable(filteredOrders);
-  }
-  function searchOrders(val) {
-    applyFilter(currentFilter);
-    if(val) applySearch(val);
-  }
-  function applySearch(val) {
-    const v=val.toLowerCase();
-    const results=filteredOrders.filter(o=>
-      o.name?.toLowerCase().includes(v)||
-      o.orderId?.toLowerCase().includes(v)||
-      o.phone?.includes(v)||
-      o.wilaya?.toLowerCase().includes(v)
-    );
-    renderTable(results);
-  }
-
-  // ── TABLE ──
-  function renderTable(orders) {
-    document.getElementById('ordersCount').textContent=orders.length+' طلب';
-    if(orders.length===0){
-      document.getElementById('ordersTableContainer').innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>لا توجد طلبات</p></div>';
+    if(!name||!phone||!wilaya||!address){
+      msgEl.style.color='var(--red)';
+      msgEl.textContent=currentLang==='ar'?'⚠️ يرجى ملء جميع الحقول المطلوبة':'⚠️ Please fill in all required fields';
       return;
     }
-    const rows=orders.map((o,i)=>{
-      const realIdx=allOrders.indexOf(o);
-      const statusClass=o.status.includes('New')||o.status.includes('جديد')?'status-new':o.status.includes('Confirmed')||o.status.includes('مؤكد')?'status-confirmed':o.status.includes('Delivered')||o.status.includes('توصيل')?'status-delivered':'status-cancelled';
-      return `<tr>
-        <td><span class="order-id">${o.orderId||'-'}</span></td>
-        <td><strong>${o.name||'-'}</strong><br><span style="color:var(--muted);font-size:11px">${o.phone||''}</span></td>
-        <td>${o.wilaya||'-'}</td>
-        <td>${o.date||'-'}</td>
-        <td>${o.total||'-'}</td>
-        <td><span class="status-badge ${statusClass}">${o.status}</span></td>
-        <td>
-          <div class="action-btns">
-            <button class="action-btn btn-view" onclick="viewOrder(${realIdx})">👁 عرض</button>
-            ${!o.status.includes('Delivered')&&!o.status.includes('توصيل')?`<button class="action-btn btn-deliver" onclick="updateStatus(${realIdx},'تم التوصيل / Delivered')">🚚</button>`:''}
-            ${o.status.includes('New')||o.status.includes('جديد')?`<button class="action-btn btn-confirm" onclick="updateStatus(${realIdx},'مؤكد / Confirmed')">✅</button>`:''}
-            ${!o.status.includes('Cancelled')&&!o.status.includes('ملغي')?`<button class="action-btn btn-cancel" onclick="updateStatus(${realIdx},'ملغي / Cancelled')">✕</button>`:''}
-          </div>
-        </td>
-      </tr>`;
-    }).join('');
-    document.getElementById('ordersTableContainer').innerHTML=`
-      <table>
-        <thead><tr>
-          <th>رقم الطلب</th><th>العميل</th><th>الولاية</th><th>التاريخ</th><th>المبلغ</th><th>الحالة</th><th>إجراءات</th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
-  }
 
-  // ── STATUS UPDATE ──
-  async function updateStatus(idx, newStatus) {
-    allOrders[idx].status = newStatus;
-    localStorage.setItem('bb_orders', JSON.stringify(allOrders));
-    if(true){
-      try {
-        await fetch('https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SCRIPT_URL), {method:'POST', body:JSON.stringify({action:'updateStatus', orderId:allOrders[idx].orderId, status:newStatus})});
-      } catch(e){ console.warn('Could not sync to Google Sheets'); }
+    const orderId='BB-'+Date.now().toString().slice(-6);
+    const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const products=cart.map(i=>`${i.nameAr} (${i.nameEn}) x${i.qty} = ${(i.price*i.qty).toLocaleString()} DA`).join(' | ');
+
+    const orderData={
+      orderId, name, phone, wilaya, address, notes,
+      products, total: total+' DA',
+      date: new Date().toLocaleString('fr-DZ'),
+      status:'جديد / New'
+    };
+
+    // Send to Google Sheets
+    btn.disabled=true;
+    btn.innerHTML=`<span class="t" data-ar="جاري الإرسال..." data-en="Sending...">${currentLang==='ar'?'جاري الإرسال...':'Sending...'}</span><span class="spinner"></span>`;
+
+    try {
+      await fetch('https://corsproxy.io/?' + encodeURIComponent(GOOGLE_SCRIPT_URL), {method:'POST', body:JSON.stringify(orderData)});
+    } catch(e) {
+      console.warn('Google Sheets not configured yet, showing success anyway');
     }
-    updateStats();
-    applyFilter(currentFilter);
+
+    // Show success screen
+    document.getElementById('modalBody').innerHTML=`
+      <div class="success-screen">
+        <div class="success-icon">🎉</div>
+        <h3>${currentLang==='ar'?'تم استلام طلبك!':'Order Received!'}</h3>
+        <div class="success-order-id">${orderId}</div>
+        <p>${currentLang==='ar'?'سنتصل بك قريباً على الرقم':'We will contact you soon at'} <strong>${phone}</strong><br>${currentLang==='ar'?'للتأكيد وترتيب التوصيل':'to confirm and arrange delivery'}</p>
+        <button class="btn-primary" style="margin-top:24px;width:100%" onclick="closeOrderModal()">${currentLang==='ar'?'حسناً، شكراً!':'OK, Thank you!'}</button>
+      </div>`;
+
+    cart=[]; updateCartCount(); renderCart();
   }
 
-  // ── ORDER DETAIL ──
-  function viewOrder(idx) {
-    currentOrderIndex = idx;
-    const o = allOrders[idx];
-    const products = o.products ? o.products.split('|').map(p=>`<div class="product-line"><span>${p.trim()}</span></div>`).join('') : '';
-    document.getElementById('orderDetailContent').innerHTML=`
-      <div class="detail-grid">
-        <div class="detail-item"><label>رقم الطلب</label><p style="color:var(--gold);font-family:'Bebas Neue',sans-serif;font-size:20px">${o.orderId}</p></div>
-        <div class="detail-item"><label>التاريخ</label><p>${o.date}</p></div>
-        <div class="detail-item"><label>الاسم</label><p>${o.name}</p></div>
-        <div class="detail-item"><label>الهاتف</label><p>${o.phone}</p></div>
-        <div class="detail-item"><label>الولاية</label><p>${o.wilaya}</p></div>
-        <div class="detail-item detail-full"><label>العنوان</label><p>${o.address}</p></div>
-        ${o.notes?`<div class="detail-item detail-full"><label>ملاحظات</label><p>${o.notes}</p></div>`:''}
-      </div>
-      <div style="margin-bottom:16px"><label style="display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:8px;letter-spacing:1px">المنتجات المطلوبة</label>
-        <div class="products-list">${products}<div class="product-line"><span>المجموع</span><span style="color:var(--red)">${o.total}</span></div></div>
-      </div>
-      <label style="display:block;font-size:11px;color:var(--muted);font-weight:700;margin-bottom:6px;letter-spacing:1px">تغيير الحالة</label>
-      <select class="status-select" id="statusSelect">
-        <option value="جديد / New" ${o.status.includes('New')||o.status.includes('جديد')?'selected':''}>🔴 جديد</option>
-        <option value="مؤكد / Confirmed" ${o.status.includes('Confirmed')||o.status.includes('مؤكد')?'selected':''}>🟡 مؤكد</option>
-        <option value="تم التوصيل / Delivered" ${o.status.includes('Delivered')||o.status.includes('توصيل')?'selected':''}>🟢 تم التوصيل</option>
-        <option value="ملغي / Cancelled" ${o.status.includes('Cancelled')||o.status.includes('ملغي')?'selected':''}>⚫ ملغي</option>
-      </select>
-      <button class="save-status-btn" onclick="saveStatusFromModal()">💾 حفظ الحالة</button>`;
-    document.getElementById('orderDetailModal').classList.add('open');
+  // ── CONTACT FORM ──
+  function submitContactForm() {
+    const name=document.getElementById('f-name').value.trim();
+    const email=document.getElementById('f-email').value.trim();
+    const phone=document.getElementById('f-phone').value.trim();
+    const subject=document.getElementById('f-subject').value;
+    const msg=document.getElementById('f-msg').value.trim();
+    const msgEl=document.getElementById('form-msg');
+    if(!name||!email||!msg){ msgEl.className='error'; msgEl.textContent=currentLang==='ar'?'⚠️ يرجى ملء جميع الحقول':'⚠️ Please fill required fields'; return; }
+    const subjectLabels={order:'طلب منتج',inquiry:'استفسار',delivery:'توصيل',other:'أخرى'};
+    const emailSubject=`[BodyBoost DZ] ${subjectLabels[subject]} - ${name}`;
+    const emailBody=`Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nSubject: ${subjectLabels[subject]}\n\nMessage:\n${msg}`;
+    window.location.href=`mailto:yacinzbac2023@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    msgEl.className='success'; msgEl.textContent=currentLang==='ar'?'✅ تم فتح البريد الإلكتروني!':'✅ Email client opened!';
+    ['f-name','f-email','f-phone','f-msg'].forEach(id=>document.getElementById(id).value='');
   }
 
-  async function saveStatusFromModal() {
-    const newStatus = document.getElementById('statusSelect').value;
-    await updateStatus(currentOrderIndex, newStatus);
-    closeDetailModal();
-  }
-  function closeDetailModal(){ document.getElementById('orderDetailModal').classList.remove('open'); }
+  function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 
-  // Start
-  loadOrders();
-</script>
-</body>
-</html>
+  document.querySelecto
